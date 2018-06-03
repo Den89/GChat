@@ -64,7 +64,7 @@ public class HibernateConfiguration {
     private Properties constructHibernateProperties() {
         final String[] names = {"hibernate.dialect", "hibernate.show_sql", "hibernate.format_sql",
                 "hibernate.hbm2ddl.auto", "hibernate.cache.provider_class", "hibernate.cache.use_second_level_cache",
-                "hibernate.cache.region.factory_class"};
+                "hibernate.cache.region.factory_class", "hibernate.transaction.flush_before_completion"};
 
         final Properties result = new Properties();
         Arrays.stream(names).forEach(name -> {

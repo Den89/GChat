@@ -2,6 +2,7 @@ package sample.service.room;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sample.model.Room;
 import sample.repository.RoomRepository;
 import sample.service.room.RoomService;
@@ -11,6 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class RoomServiceImpl implements RoomService {
     @Autowired
     private RoomRepository roomRepository;

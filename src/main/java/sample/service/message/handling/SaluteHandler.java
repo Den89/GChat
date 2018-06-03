@@ -2,12 +2,14 @@ package sample.service.message.handling;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sample.dto.MessageDto;
 import sample.model.MessageAction;
 import sample.service.UserService;
 import sample.service.session.WsSessionSender;
 
 @Service
+@Transactional
 public class SaluteHandler implements MessageHandlingStrategy {
     private final UserService userService;
     private final WsSessionSender wsSessionSender;

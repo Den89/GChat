@@ -1,6 +1,7 @@
 package sample.model;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -11,8 +12,8 @@ public class User {
     @Column
     private int rank;
 
-    @ManyToMany
-    private Set<Room> rooms ;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Room> rooms = new HashSet<>();
 
     public Set<Room> getRooms() {
         return rooms;

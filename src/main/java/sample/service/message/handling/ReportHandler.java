@@ -2,6 +2,7 @@ package sample.service.message.handling;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sample.dto.MessageDto;
 import sample.model.MessageAction;
 import sample.model.Room;
@@ -10,6 +11,7 @@ import sample.service.UserService;
 import sample.service.message.MessagingService;
 
 @Service
+@Transactional
 public class ReportHandler implements MessageHandlingStrategy {
     private final MessagingService messagingService;
     private final UserService userService;
