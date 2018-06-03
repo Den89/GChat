@@ -4,13 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sample.Ranks;
 import sample.model.User;
-import sample.service.AuthListener;
 import sample.service.UserService;
-import sample.service.auth.AuthenticateService;
 import sample.service.session.WsSessionSender;
 
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,7 +38,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
             listeners.forEach(l -> l.onSuccessAuth(user));
             return true;
         } else {
-            wsSessionSender.send("Unauthorized");
+            wsSessionSender.sendToCurrent("Unauthorized");
             return false;
         }
     }

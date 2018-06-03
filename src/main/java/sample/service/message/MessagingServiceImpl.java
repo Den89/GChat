@@ -3,12 +3,16 @@ package sample.service.message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import sample.model.Message;
 import sample.model.Room;
 import sample.model.User;
 import sample.service.session.WsSessionManager;
+import sample.service.session.WsSessionSender;
+import sample.service.subscribe.SubscribeEvent;
+import sample.service.subscribe.SubscribeService;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -19,25 +23,17 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class MessagingServiceImpl implements MessagingService {
-    @PersistenceContext
-    private EntityManager entityManager;
     @Autowired
-    private WsSessionManager wsSessionManager;
+    private WsSessionSender wsSessionSender;
+    @Autowired
+    private SubscribeService subscribeService;
+    @Autowired
+    private MessageService messageService;
 
     private final Map<Room, Set<User>> usersByRoom = new HashMap<>();
     private final Map<Room, Set<Message>> messagesByRoom = new HashMap<>();
     private final Map<Message, Set<User>> receiversByMessage = new HashMap<>();
 
-    @Override
-    public Map<Room, Integer> getRoomMessagesNumber() {
-        Map<Room, Integer> numberByRoom = new HashMap<>();
-
-        entityManager.createQuery("from Room", Room.class).getResultList().forEach(room -> {
-            numberByRoom.put(room, room.getMessages().size());
-        });
-
-        return numberByRoom;
-    }
 
     @Override
     public Map<Message, Set<User>> getReceivers() {
@@ -47,99 +43,43 @@ public class MessagingServiceImpl implements MessagingService {
     @Override
     public void report(User user, Room room, String text, boolean secret) {
         synchronized (messagesByRoom) {
-            subscribeUser(room, user);
+            subscribeService.subscribeUser(room, user);
 
-            Message msg = constructMessage(user, room, text, secret);
+            Message msg = messageService.create(user, room, secret, text);
             addMessageInRoom(room, msg);
             sendMessageToSubscribers(msg);
         }
     }
 
-    @Override
-    public void subscribeUser(Room room, User user) {
-        synchronized (usersByRoom) {
-
-            Set<User> users = usersByRoom.get(room);
-            if (users == null) {
-                users = new HashSet<>();
-                usersByRoom.put(room, users);
-            }
-            if (usersByRoom.get(room).contains(user)) {
-                return;
-            }
-            users.add(user);
-
-            Message message = constructSubscribedMessage(user, room);
-            synchronized (messagesByRoom) {
-                sendMessageToSubscribers(message);
-                addMessageInRoom(room, message);
-            }
-        }
-    }
 
     @Override
     public void addMessageInRoom(Room room, Message message) {
-        synchronized (usersByRoom) {
-            Set<Message> messagesInRoom = messagesByRoom.get(room);
-            if (messagesInRoom == null) {
-                messagesInRoom = new HashSet<>();
-                messagesByRoom.put(room, messagesInRoom);
-            }
-            messagesInRoom.add(message);
 
-            Set<User> receivers;
-            if (message.isSecret()) {
-                receivers = usersByRoom.get(room).stream()
-                        .filter(user -> user.getRank() >= message.getUser().getRank()).collect(Collectors.toSet());
-            } else {
-                receivers = new HashSet<>(usersByRoom.get(room));
-            }
-            receiversByMessage.put(message, receivers);
+        Set<Message> messagesInRoom = room.getMessages();
+        if (messagesInRoom == null) {
+            messagesInRoom = new HashSet<>();
+            messagesByRoom.put(room, messagesInRoom);
         }
+        messagesInRoom.add(message);
+
+        Set<User> receivers;
+        if (message.isSecret()) {
+            receivers = usersByRoom.get(room).stream()
+                    .filter(user -> user.getRank() >= message.getUser().getRank()).collect(Collectors.toSet());
+        } else {
+            receivers = new HashSet<>(usersByRoom.get(room));
+        }
+        receiversByMessage.put(message, receivers);
+
     }
 
     @Override
     public void sendMessageToSubscribers(Message message) {
-        synchronized (usersByRoom) {
-            usersByRoom.get(message.getRoom()).forEach(user -> {
-                if (message.isSecret() && user.getRank() < message.getUser().getRank()) {
-                    return;
-                }
-
-                WebSocketSession session = wsSessionManager.getForLoggedUser(user);
-                if (session != null && session.isOpen()) {
-                    try {
-                        session.sendMessage(new TextMessage(message.toJSON().toJSONString()));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        }
-    }
-
-    private Message constructMessage(User user, Room room, String text, boolean secret) {
-        Message result = new Message();
-        result.setText(text);
-        result.setSecret(secret);
-        result.setEpoch(System.currentTimeMillis());
-        result.setUser(user);
-        result.setRoom(room);
-        result.setEpoch(System.currentTimeMillis());
-        entityManager.persist(result);
-        entityManager.flush(); // set id for the massage
-        return result;
-    }
-
-    private Message constructSubscribedMessage(User user, Room room) {
-        Message result = new Message();
-        result.setUser(user);
-        result.setRoom(room);
-        result.setEpoch(System.currentTimeMillis() / 1000);
-        result.setSecret(false);
-        result.setText("User " + user.getName() + " subscribed to the room " + room.getName());
-        entityManager.persist(result);
-        entityManager.flush(); // set id for the massage
-        return result;
+        message.getRoom().getUsers().forEach(user -> {
+            if (message.isSecret() && user.getRank() < message.getUser().getRank()) {
+                return;
+            }
+            wsSessionSender.sendToUser(user, message.toJSON().toJSONString());
+        });
     }
 }

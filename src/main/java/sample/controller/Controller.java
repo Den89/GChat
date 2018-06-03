@@ -10,6 +10,7 @@ import sample.model.Message;
 import sample.model.Room;
 import sample.model.User;
 import sample.service.message.MessagingService;
+import sample.service.room.RoomService;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
@@ -22,6 +23,8 @@ import java.util.Set;
 class Controller {
     @Autowired
     private MessagingService messagingService;
+    @Autowired
+    private RoomService roomService;
 
     @RequestMapping(value="/salute", method=RequestMethod.POST, produces = "application/json; charset=UTF-8")
     public @ResponseBody String echo(@RequestParam(name = "name") String name,
@@ -41,7 +44,7 @@ class Controller {
     @RequestMapping(value="/rooms", method=RequestMethod.POST, produces = "application/json; charset=UTF-8")
     public @ResponseBody String getRooms(@RequestParam(name = "hash") String hash,
                                        @RequestParam(name = "name") String name) {
-        return constructRoomsResponse(messagingService.getRoomMessagesNumber()).toJSONString();
+        return constructRoomsResponse(roomService.getRoomMessagesNumber()).toJSONString();
     }
 
     private JSONObject constructRoomsResponse(Map<Room, Integer> numberByRoom) {

@@ -3,12 +3,11 @@ package sample.service.session;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 import sample.model.User;
-import sample.service.AuthListener;
+import sample.service.auth.AuthListener;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Predicate;
 
 @Service
 public class WsSessionManagerImpl implements WsSessionManager, AuthListener {

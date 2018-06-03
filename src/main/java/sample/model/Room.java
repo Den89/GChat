@@ -10,6 +10,16 @@ public class Room {
     private String name;
     @OneToMany(mappedBy = "room")
     private Set<Message> messages;
+    @ManyToMany(mappedBy = "rooms")
+    private Set<User> users;
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
 
     public String getName() {
         return name;

@@ -53,7 +53,6 @@ public class WSHandler implements WebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
         wsSessionManager.unsetCurrent(session);
-//        wsSessionManager.removeForUser(session);
     }
 
     @Override

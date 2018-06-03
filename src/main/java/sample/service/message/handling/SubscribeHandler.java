@@ -5,14 +5,15 @@ import org.springframework.stereotype.Service;
 import sample.dto.MessageDto;
 import sample.model.MessageAction;
 import sample.model.Room;
-import sample.service.RoomService;
+import sample.service.room.RoomService;
 import sample.service.UserService;
 import sample.service.message.MessagingService;
+import sample.service.subscribe.SubscribeService;
 
 @Service
 public class SubscribeHandler implements MessageHandlingStrategy {
     @Autowired
-    private MessagingService messagingService;
+    private SubscribeService subscribeService;
     @Autowired
     private UserService userService;
     @Autowired
@@ -22,7 +23,7 @@ public class SubscribeHandler implements MessageHandlingStrategy {
     @Override
     public void handle(MessageDto dto) {
         Room room = roomService.getOrCreate(dto.getRoom());
-        messagingService.subscribeUser(room, userService.findById(dto.getName()).get());
+        subscribeService.subscribeUser(room, userService.findById(dto.getName()).get());
     }
 
     @Override

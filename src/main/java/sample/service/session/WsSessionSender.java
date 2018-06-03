@@ -1,5 +1,8 @@
 package sample.service.session;
 
+import sample.model.User;
+
 public interface WsSessionSender {
-    void send(String text);
+    void sendToCurrent(String text);
+    void sendToUser(User user, String text);
 }

@@ -1,6 +1,7 @@
 package sample.model;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -9,6 +10,17 @@ public class User {
     private String name;
     @Column
     private int rank;
+
+    @ManyToMany
+    private Set<Room> rooms ;
+
+    public Set<Room> getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(Set<Room> rooms) {
+        this.rooms = rooms;
+    }
 
     public String getName() {
         return name;

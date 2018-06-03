@@ -1,10 +1,13 @@
-package sample.service;
+package sample.service.room;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sample.model.Room;
 import sample.repository.RoomRepository;
+import sample.service.room.RoomService;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -26,5 +29,15 @@ public class RoomServiceImpl implements RoomService {
         });
     }
 
+    @Override
+    public Map<Room, Integer> getRoomMessagesNumber() {
+        Map<Room, Integer> numberByRoom = new HashMap<>();
+
+        roomRepository.findAll().forEach(room -> {
+            numberByRoom.put(room, room.getMessages().size());
+        });
+
+        return numberByRoom;
+    }
 
 }

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import sample.dto.MessageDto;
 import sample.model.MessageAction;
 import sample.model.Room;
-import sample.service.RoomService;
+import sample.service.room.RoomService;
 import sample.service.UserService;
 import sample.service.message.MessagingService;
 

@@ -20,7 +20,7 @@ public class SaluteHandler implements MessageHandlingStrategy {
 
     @Override
     public void handle(MessageDto dto) {
-        wsSessionSender.send("Your rank is " + userService.findById(dto.getName()).get().getRank());
+        wsSessionSender.sendToCurrent("Your rank is " + userService.findById(dto.getName()).get().getRank());
     }
 
     @Override

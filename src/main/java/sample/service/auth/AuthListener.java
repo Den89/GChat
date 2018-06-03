@@ -1,4 +1,4 @@
-package sample.service;
+package sample.service.auth;
 
 import sample.model.User;
 
