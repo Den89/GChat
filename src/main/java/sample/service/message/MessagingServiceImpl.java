@@ -8,7 +8,7 @@ import org.springframework.web.socket.WebSocketSession;
 import sample.model.Message;
 import sample.model.Room;
 import sample.model.User;
-import sample.service.session.SessionManager;
+import sample.service.session.WsSessionManager;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -22,7 +22,7 @@ public class MessagingServiceImpl implements MessagingService {
     @PersistenceContext
     private EntityManager entityManager;
     @Autowired
-    private SessionManager sessionManager;
+    private WsSessionManager wsSessionManager;
 
     private final Map<Room, Set<User>> usersByRoom = new HashMap<>();
     private final Map<Room, Set<Message>> messagesByRoom = new HashMap<>();
@@ -106,7 +106,7 @@ public class MessagingServiceImpl implements MessagingService {
                     return;
                 }
 
-                WebSocketSession session = sessionManager.getForLoggedUser(user).get();
+                WebSocketSession session = wsSessionManager.getForLoggedUser(user).get();
                 if (session != null && session.isOpen()) {
                     try {
                         session.sendMessage(new TextMessage(message.toJSON().toJSONString()));
@@ -120,7 +120,7 @@ public class MessagingServiceImpl implements MessagingService {
 
     @Override
     public void sendToCurrent(String message) {
-        sessionManager.getCurrent().ifPresent(session -> {
+        wsSessionManager.getCurrent().ifPresent(session -> {
             try {
                 session.sendMessage(new TextMessage("Unauthorized"));
             } catch (IOException e) {

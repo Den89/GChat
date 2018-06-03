@@ -8,8 +8,10 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean;
+import sample.service.AuthenticateService;
 import sample.service.WSHandler;
 import sample.service.message.handling.MessageHandlingStrategy;
+import sample.service.session.WsSessionManager;
 
 import java.util.List;
 
@@ -21,6 +23,10 @@ import java.util.List;
 public class WebSocketConfig implements WebSocketConfigurer {
     @Autowired
     List<MessageHandlingStrategy> handlers;
+    @Autowired
+    private AuthenticateService authService;
+    @Autowired
+    private WsSessionManager wsSessionManager;
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
@@ -39,6 +45,6 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
     @Bean
     public WebSocketHandler webSocketHandler() {
-        return new WSHandler(handlers);
+        return new WSHandler(handlers, authService, wsSessionManager);
     }
 }

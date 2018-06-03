@@ -5,7 +5,7 @@ import sample.model.User;
 
 import java.util.Optional;
 
-public interface SessionManager {
+public interface WsSessionManager {
     Optional<WebSocketSession> getCurrent();
 
     void setCurrent(WebSocketSession session);
