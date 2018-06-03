@@ -2,8 +2,6 @@ package sample.controller;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -11,7 +9,7 @@ import sample.Ranks;
 import sample.model.Message;
 import sample.model.Room;
 import sample.model.User;
-import sample.service.MessagingService;
+import sample.service.message.MessagingService;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;

@@ -1,4 +1,4 @@
-package sample.service;
+package sample.service.message;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -7,6 +7,7 @@ import org.springframework.web.socket.WebSocketSession;
 import sample.model.Message;
 import sample.model.Room;
 import sample.model.User;
+import sample.service.message.MessagingService;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

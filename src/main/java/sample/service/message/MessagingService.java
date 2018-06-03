@@ -1,4 +1,4 @@
-package sample.service;
+package sample.service.message;
 
 import org.springframework.web.socket.WebSocketSession;
 import sample.model.Message;
