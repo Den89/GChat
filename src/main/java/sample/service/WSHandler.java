@@ -9,6 +9,7 @@ import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 import sample.dto.MessageDto;
 import sample.model.MessageAction;
+import sample.service.auth.AuthenticateService;
 import sample.service.message.handling.MessageHandlingStrategy;
 import sample.service.session.WsSessionManager;
 import sample.utils.MappingUtils;
@@ -34,7 +35,7 @@ public class WSHandler implements WebSocketHandler {
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
         wsSessionManager.setCurrent(session);
         MessageDto messageDto = messageReader.readValue(message.getPayload().toString());
-        authService.authenticate(messageDto.getName(), messageDto.getHash(), session);
+        authService.authenticate(messageDto.getName(), messageDto.getHash());
         handlersByAction.get(messageDto.getAction()).handle(messageDto);
     }
 
@@ -52,6 +53,7 @@ public class WSHandler implements WebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
         wsSessionManager.unsetCurrent(session);
+//        wsSessionManager.removeForUser(session);
     }
 
     @Override

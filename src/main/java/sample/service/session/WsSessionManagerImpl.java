@@ -8,6 +8,7 @@ import sample.service.AuthListener;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 
 @Service
 public class WsSessionManagerImpl implements WsSessionManager, AuthListener {
@@ -41,7 +42,14 @@ public class WsSessionManagerImpl implements WsSessionManager, AuthListener {
     }
 
     @Override
-    public void onSuccessAuth(User user) {
-        setForUser(user, getCurrent());
+    public synchronized void onSuccessAuth(User user) {
+        WebSocketSession userSession = sessionByUser.get(user);
+        WebSocketSession currentSession = getCurrent();
+
+        if (userSession == null){
+            setForUser(user, currentSession);
+        } else if (userSession != currentSession){
+            throw new RuntimeException("Duplicate connection");
+        }
     }
 }

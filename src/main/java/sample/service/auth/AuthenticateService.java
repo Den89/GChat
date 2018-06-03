@@ -1,8 +1,8 @@
-package sample.service;
+package sample.service.auth;
 
 import org.springframework.web.socket.WebSocketSession;
 import sample.model.User;
 
 public interface AuthenticateService {
-    void authenticate(String name, String hash, WebSocketSession session);
+    boolean authenticate(String name, String hash);
 }

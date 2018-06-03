@@ -8,7 +8,7 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean;
-import sample.service.AuthenticateService;
+import sample.service.auth.AuthenticateService;
 import sample.service.WSHandler;
 import sample.service.message.handling.MessageHandlingStrategy;
 import sample.service.session.WsSessionManager;

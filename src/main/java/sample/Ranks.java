@@ -32,8 +32,7 @@ public class Ranks {
         }
     }
 
-    public static Optional<Integer> getRank(String name, String hash)
-            throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public static Optional<Integer> getRank(String name, String hash) {
         if (getMD5(name + SOLDIER_KEY).equals(hash)) {
             return Optional.of(SOLDIER_RANK);
         } else if (getMD5(name + SERGEANT_KEY).equals(hash)) {
@@ -47,10 +46,18 @@ public class Ranks {
         }
     }
 
-    private static String getMD5(String x) throws NoSuchAlgorithmException, UnsupportedEncodingException {
-        byte[] bytesOfMessage = x.getBytes("UTF-8");
+    private static String getMD5(String x){
+        byte[] bytesOfMessage;
+        MessageDigest md;
 
-        MessageDigest md = MessageDigest.getInstance("MD5");
+        try {
+            bytesOfMessage = x.getBytes("UTF-8");
+            md = MessageDigest.getInstance("MD5");
+        } catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
         byte[] thedigest = md.digest(bytesOfMessage);
         return new String(Base64.encodeBase64(thedigest));
     }
