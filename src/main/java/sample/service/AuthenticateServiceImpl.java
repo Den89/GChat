@@ -2,34 +2,31 @@ package sample.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import sample.Ranks;
 import sample.model.User;
 import sample.service.message.MessagingService;
+import sample.service.session.WsSessionSender;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Supplier;
 
 @Service
 public class AuthenticateServiceImpl implements AuthenticateService {
-    @Autowired
-    MessagingService messagingService;
+    private final MessagingService messagingService;
+    private final UserService userService;
+    private final WsSessionSender wsSessionSender;
+    private final List<AuthListener> listeners;
 
     @Autowired
-    UserService userService;
-
-
-    @Autowired
-    List<AuthListener> listeners;
+    public AuthenticateServiceImpl(MessagingService messagingService, UserService userService, WsSessionSender wsSessionSender, List<AuthListener> listeners) {
+        this.messagingService = messagingService;
+        this.userService = userService;
+        this.wsSessionSender = wsSessionSender;
+        this.listeners = listeners;
+    }
 
 
     @Override
@@ -41,7 +38,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
             e.printStackTrace();
         }
         if (user == null) {
-            messagingService.sendToCurrent("Unauthorized");
+            wsSessionSender.send("Unauthorized");
 
         } else {
             final User userForLambda = user;

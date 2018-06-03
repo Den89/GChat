@@ -106,7 +106,7 @@ public class MessagingServiceImpl implements MessagingService {
                     return;
                 }
 
-                WebSocketSession session = wsSessionManager.getForLoggedUser(user).get();
+                WebSocketSession session = wsSessionManager.getForLoggedUser(user);
                 if (session != null && session.isOpen()) {
                     try {
                         session.sendMessage(new TextMessage(message.toJSON().toJSONString()));
@@ -116,17 +116,6 @@ public class MessagingServiceImpl implements MessagingService {
                 }
             });
         }
-    }
-
-    @Override
-    public void sendToCurrent(String message) {
-        wsSessionManager.getCurrent().ifPresent(session -> {
-            try {
-                session.sendMessage(new TextMessage("Unauthorized"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
     }
 
     private Message constructMessage(User user, Room room, String text, boolean secret) {

@@ -21,12 +21,16 @@ import java.util.List;
 @Configuration
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
+    private final List<MessageHandlingStrategy> handlers;
+    private final AuthenticateService authService;
+    private final WsSessionManager wsSessionManager;
+
     @Autowired
-    List<MessageHandlingStrategy> handlers;
-    @Autowired
-    private AuthenticateService authService;
-    @Autowired
-    private WsSessionManager wsSessionManager;
+    public WebSocketConfig(List<MessageHandlingStrategy> handlers, AuthenticateService authService, WsSessionManager wsSessionManager) {
+        this.handlers = handlers;
+        this.authService = authService;
+        this.wsSessionManager = wsSessionManager;
+    }
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {

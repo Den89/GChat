@@ -14,13 +14,17 @@ public class WsSessionManagerImpl implements WsSessionManager, AuthListener {
     private final ThreadLocal<WebSocketSession> wsSession = new ThreadLocal<>();
     private final Map<User, WebSocketSession> sessionByUser = new ConcurrentHashMap<>();
 
-    public Optional<WebSocketSession> getCurrent() {
-        return Optional.ofNullable(wsSession.get());
+    public WebSocketSession getCurrent() {
+        return Optional
+                .ofNullable(wsSession.get())
+                .orElseThrow(() -> new RuntimeException("Could not obtain current session"));
     }
 
     @Override
-    public Optional<WebSocketSession> getForLoggedUser(User user) {
-        return Optional.ofNullable(sessionByUser.get(user));
+    public WebSocketSession getForLoggedUser(User user) {
+        return Optional
+                .ofNullable(sessionByUser.get(user))
+                .orElseThrow(() -> new RuntimeException("Could not obtain session for User " + user.getName()));
     }
 
     @Override
@@ -38,6 +42,6 @@ public class WsSessionManagerImpl implements WsSessionManager, AuthListener {
 
     @Override
     public void onSuccessAuth(User user) {
-        setForUser(user, getCurrent().get());
+        setForUser(user, getCurrent());
     }
 }

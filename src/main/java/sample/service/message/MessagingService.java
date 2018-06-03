@@ -19,6 +19,4 @@ public interface MessagingService {
     void addMessageInRoom(Room room, Message message);
 
     void sendMessageToSubscribers(Message message);
-
-    void sendToCurrent(String message);
 }

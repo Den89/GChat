@@ -6,13 +6,13 @@ import sample.model.User;
 import java.util.Optional;
 
 public interface WsSessionManager {
-    Optional<WebSocketSession> getCurrent();
+    WebSocketSession getCurrent();
 
     void setCurrent(WebSocketSession session);
 
     void unsetCurrent(WebSocketSession session);
 
-    Optional<WebSocketSession> getForLoggedUser(User user);
+    WebSocketSession getForLoggedUser(User user);
 
     void setForUser(User user, WebSocketSession session);
 }
