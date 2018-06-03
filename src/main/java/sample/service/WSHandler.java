@@ -38,9 +38,9 @@ public class WSHandler implements WebSocketHandler {
 
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
+        sessionManager.setCurrent(session);
         MessageDto messageDto = messageReader.readValue(message.getPayload().toString());
         authService.authenticate(messageDto.getName(), messageDto.getHash(), session);
-        roomService.create(messageDto.getRoom());
         handlersByAction.get(messageDto.getAction()).handle(messageDto);
     }
 

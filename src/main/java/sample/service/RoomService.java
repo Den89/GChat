@@ -6,5 +6,5 @@ import java.util.Optional;
 
 public interface RoomService {
     Optional<Room> findById(String id);
-    Room create(String name);
+    Room getOrCreate(String name);
 }

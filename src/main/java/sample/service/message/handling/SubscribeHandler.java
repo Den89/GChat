@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sample.dto.MessageDto;
 import sample.model.MessageAction;
+import sample.model.Room;
 import sample.service.RoomService;
 import sample.service.UserService;
 import sample.service.message.MessagingService;
@@ -20,7 +21,8 @@ public class SubscribeHandler implements MessageHandlingStrategy {
 
     @Override
     public void handle(MessageDto dto) {
-        messagingService.subscribeUser(roomService.findById(dto.getRoom()).get(), userService.findById(dto.getName()).get());
+        Room room = roomService.getOrCreate(dto.getRoom());
+        messagingService.subscribeUser(room, userService.findById(dto.getName()).get());
     }
 
     @Override

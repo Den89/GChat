@@ -23,7 +23,7 @@ public class ReportHandler implements MessageHandlingStrategy {
 
     @Override
     public void handle(MessageDto dto) {
-        messagingService.report(userService.findById(dto.getName()).get(), roomService.findById(dto.getName()).get(), dto.getMessage(), dto.isSecret());
+        messagingService.report(userService.findById(dto.getName()).get(), roomService.findById(dto.getRoom()).get(), dto.getMessage(), dto.isSecret());
     }
 
     @Override
