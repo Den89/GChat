@@ -12,13 +12,13 @@ public interface MessagingService {
     Map<Room, Integer> getRoomMessagesNumber();
     Map<Message, Set<User>> getReceivers();
 
-    void report(User user, Room room, String text, boolean secret, Map<User, WebSocketSession> sessionByUser);
+    void report(User user, Room room, String text, boolean secret);
 
-    void subscribeUser(Room room, User user, Map<User, WebSocketSession> sessionByUser);
+    void subscribeUser(Room room, User user);
 
     void addMessageInRoom(Room room, Message message);
 
-    void sendMessageToSubscribers(Message message, Map<User, WebSocketSession> sessionByUser);
+    void sendMessageToSubscribers(Message message);
 
     void sendToCurrent(String message);
 }

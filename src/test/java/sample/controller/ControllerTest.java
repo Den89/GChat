@@ -110,9 +110,13 @@ public class ControllerTest {
         recipientsSizeByMessageId.put(5L, 2);
         recipientsSizeByMessageId.put(6L, 1);
 
+        handler.afterConnectionEstablished(Mockito.mock(WebSocketSession.class));
         handler.handleMessage(Mockito.mock(WebSocketSession.class), new TextMessage(SIMON_MSG1));
+        handler.afterConnectionEstablished(Mockito.mock(WebSocketSession.class));
         handler.handleMessage(Mockito.mock(WebSocketSession.class), new TextMessage(VAVILEN_MSG1));
+        handler.afterConnectionEstablished(Mockito.mock(WebSocketSession.class));
         handler.handleMessage(Mockito.mock(WebSocketSession.class), new TextMessage(SIMON_MSG2));
+        handler.afterConnectionEstablished(Mockito.mock(WebSocketSession.class));
         handler.handleMessage(Mockito.mock(WebSocketSession.class), new TextMessage(VAVILEN_MSG2));
 
         mvc.perform(post("/rooms")

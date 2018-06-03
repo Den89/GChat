@@ -1,33 +1,30 @@
 package sample.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sample.model.Room;
+import sample.repository.RoomRepository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import java.util.Optional;
 
 @Service
 public class RoomServiceImpl implements RoomService {
-    @PersistenceContext
-    private EntityManager entityManager;
+    @Autowired
+    private RoomRepository roomRepository;
 
     @Override
-    public Room find() {
-        return null;
+    public Optional<Room> findById(String id) {
+        return roomRepository.findById(id);
     }
 
     @Override
     public Room create(String roomName) {
-        Room room = null;
-        if (roomName != null) {
-            room = entityManager.find(Room.class, roomName);
-            if (room == null) {
-                room = new Room();
-                room.setName(roomName);
-                entityManager.persist(room);
-            }
-        }
-
-        return room;
+        return roomRepository.findById(roomName).orElseGet(() -> {
+            Room room = new Room();
+            room.setName(roomName);
+            return roomRepository.save(room);
+        });
     }
+
+
 }

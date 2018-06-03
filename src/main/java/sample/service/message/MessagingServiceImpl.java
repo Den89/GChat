@@ -45,18 +45,18 @@ public class MessagingServiceImpl implements MessagingService {
     }
 
     @Override
-    public void report(User user, Room room, String text, boolean secret, Map<User, WebSocketSession> sessionByUser) {
+    public void report(User user, Room room, String text, boolean secret) {
         synchronized (messagesByRoom) {
-            subscribeUser(room, user, sessionByUser);
+            subscribeUser(room, user);
 
             Message msg = constructMessage(user, room, text, secret);
             addMessageInRoom(room, msg);
-            sendMessageToSubscribers(msg, sessionByUser);
+            sendMessageToSubscribers(msg);
         }
     }
 
     @Override
-    public void subscribeUser(Room room, User user, Map<User, WebSocketSession> sessionByUser) {
+    public void subscribeUser(Room room, User user) {
         synchronized (usersByRoom) {
 
             Set<User> users = usersByRoom.get(room);
@@ -71,7 +71,7 @@ public class MessagingServiceImpl implements MessagingService {
 
             Message message = constructSubscribedMessage(user, room);
             synchronized (messagesByRoom) {
-                sendMessageToSubscribers(message, sessionByUser);
+                sendMessageToSubscribers(message);
                 addMessageInRoom(room, message);
             }
         }
@@ -99,14 +99,14 @@ public class MessagingServiceImpl implements MessagingService {
     }
 
     @Override
-    public void sendMessageToSubscribers(Message message, Map<User, WebSocketSession> sessionByUser) {
+    public void sendMessageToSubscribers(Message message) {
         synchronized (usersByRoom) {
             usersByRoom.get(message.getRoom()).forEach(user -> {
                 if (message.isSecret() && user.getRank() < message.getUser().getRank()) {
                     return;
                 }
 
-                WebSocketSession session = sessionByUser.get(user);
+                WebSocketSession session = sessionManager.getForLoggedUser(user).get();
                 if (session != null && session.isOpen()) {
                     try {
                         session.sendMessage(new TextMessage(message.toJSON().toJSONString()));

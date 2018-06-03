@@ -17,15 +17,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 @Service
 public class AuthenticateServiceImpl implements AuthenticateService {
-    @PersistenceContext
-    EntityManager entityManager;
-
-
     @Autowired
     MessagingService messagingService;
+
+    @Autowired
+    UserService userService;
+
 
     @Autowired
     List<AuthListener> listeners;
@@ -51,17 +52,21 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     }
 
     private User getUser(String name, String hash) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        User user = entityManager.find(User.class, name);
-        Optional<Integer> maybeRank = Ranks.getRank(name, hash);
-        if (!maybeRank.isPresent()) {
-            return null;
-        }
-        if (user == null) {
-            user = new User();
+        return userService.findById(name).orElseGet(() -> {
+            Optional<Integer> maybeRank = null;
+            try {
+                maybeRank = Ranks.getRank(name, hash);
+            } catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+            if (!maybeRank.isPresent()) {
+                return null;
+            }
+
+            User user = new User();
             user.setName(name);
             user.setRank(maybeRank.get());
-            entityManager.persist(user);
-        }
-        return user;
+            return userService.save(user);
+        });
     }
 }

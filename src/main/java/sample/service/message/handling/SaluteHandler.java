@@ -6,16 +6,23 @@ import org.springframework.web.socket.TextMessage;
 import sample.Ranks;
 import sample.dto.MessageDto;
 import sample.model.MessageAction;
+import sample.service.UserService;
 import sample.service.message.MessagingService;
 
 @Service
-public class SaluteHandler implements MessageHandlingStrategy{
+public class SaluteHandler implements MessageHandlingStrategy {
+    private final MessagingService messagingService;
+    private final UserService userService;
+
     @Autowired
-    MessagingService messagingService;
+    public SaluteHandler(MessagingService messagingService, UserService userService) {
+        this.messagingService = messagingService;
+        this.userService = userService;
+    }
 
     @Override
     public void handle(MessageDto dto) {
-        messagingService.sendToCurrent(new TextMessage("Your rank is " + Ranks.getRankName(user.getRank())));
+        messagingService.sendToCurrent("Your rank is " + userService.findById(dto.getName()).get().getRank());
     }
 
     @Override
