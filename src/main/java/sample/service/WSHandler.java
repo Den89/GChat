@@ -10,6 +10,7 @@ import org.springframework.web.socket.WebSocketSession;
 import sample.dto.MessageDto;
 import sample.model.MessageAction;
 import sample.service.message.handling.MessageHandlingStrategy;
+import sample.service.session.SessionManager;
 import sample.utils.MappingUtils;
 
 import java.util.*;
@@ -30,6 +31,8 @@ public class WSHandler implements WebSocketHandler {
     private AuthenticateService authService;
     @Autowired
     private RoomService roomService;
+    @Autowired
+    private SessionManager sessionManager;
 
     private final ObjectReader messageReader = MappingUtils.readerFor(MessageDto.class);
 
@@ -44,6 +47,7 @@ public class WSHandler implements WebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        sessionManager.setCurrent(session);
     }
 
     @Override
@@ -52,6 +56,7 @@ public class WSHandler implements WebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
+        sessionManager.unsetCurrent(session);
     }
 
     @Override

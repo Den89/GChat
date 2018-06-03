@@ -19,4 +19,6 @@ public interface MessagingService {
     void addMessageInRoom(Room room, Message message);
 
     void sendMessageToSubscribers(Message message, Map<User, WebSocketSession> sessionByUser);
+
+    void sendToCurrent(String message);
 }

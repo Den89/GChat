@@ -1,5 +1,6 @@
 package sample.service.message;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.socket.TextMessage;
@@ -7,7 +8,7 @@ import org.springframework.web.socket.WebSocketSession;
 import sample.model.Message;
 import sample.model.Room;
 import sample.model.User;
-import sample.service.message.MessagingService;
+import sample.service.session.SessionManager;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -20,7 +21,8 @@ import java.util.stream.Collectors;
 public class MessagingServiceImpl implements MessagingService {
     @PersistenceContext
     private EntityManager entityManager;
-
+    @Autowired
+    private SessionManager sessionManager;
 
     private final Map<Room, Set<User>> usersByRoom = new HashMap<>();
     private final Map<Room, Set<Message>> messagesByRoom = new HashMap<>();
@@ -114,6 +116,17 @@ public class MessagingServiceImpl implements MessagingService {
                 }
             });
         }
+    }
+
+    @Override
+    public void sendToCurrent(String message) {
+        sessionManager.getCurrent().ifPresent(session -> {
+            try {
+                session.sendMessage(new TextMessage("Unauthorized"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     private Message constructMessage(User user, Room room, String text, boolean secret) {

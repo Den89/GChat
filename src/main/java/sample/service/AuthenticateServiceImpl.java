@@ -1,16 +1,19 @@
 package sample.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import sample.Ranks;
 import sample.model.User;
+import sample.service.message.MessagingService;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,10 +22,17 @@ import java.util.concurrent.ConcurrentHashMap;
 public class AuthenticateServiceImpl implements AuthenticateService {
     @PersistenceContext
     EntityManager entityManager;
-    private final Map<User, WebSocketSession> sessionByUser = new ConcurrentHashMap<>();
+
+
+    @Autowired
+    MessagingService messagingService;
+
+    @Autowired
+    List<AuthListener> listeners;
+
 
     @Override
-    public void authenticate(String name, String hash, WebSocketSession session){
+    public void authenticate(String name, String hash, WebSocketSession session) {
         User user = null;
         try {
             user = getUser(name, hash);
@@ -30,14 +40,14 @@ public class AuthenticateServiceImpl implements AuthenticateService {
             e.printStackTrace();
         }
         if (user == null) {
-            try {
-                session.sendMessage(new TextMessage("Unauthorized"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            messagingService.sendToCurrent("Unauthorized");
 
+        } else {
+            final User userForLambda = user;
+            listeners.forEach(l -> l.onSuccessAuth(userForLambda));
         }
-        sessionByUser.put(user, session);
+
+
     }
 
     private User getUser(String name, String hash) throws UnsupportedEncodingException, NoSuchAlgorithmException {
