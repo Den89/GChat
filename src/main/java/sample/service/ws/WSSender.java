@@ -2,10 +2,10 @@ package sample.service.ws;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import sample.model.Message;
+import sample.model.Subscription;
 import sample.model.User;
 import sample.service.listeners.FailAuthListener;
 import sample.service.listeners.NewMessageListener;
@@ -14,7 +14,7 @@ import sample.service.listeners.events.FailAuthEvent;
 import sample.service.listeners.events.NewMessageEvent;
 import sample.service.message.MessageService;
 import sample.service.session.WsSessionManager;
-import sample.service.listeners.events.SubscribeEvent;
+import sample.service.listeners.events.NewSubscriptionEvent;
 
 import java.io.IOException;
 
@@ -41,7 +41,7 @@ public class WSSender implements WsSessionSender, SubscribeListener, FailAuthLis
     }
 
     @Override
-    public void onSubscribe(SubscribeEvent event) {
+    public void onSubscribe(NewSubscriptionEvent event) {
         sendMessageToSubscribers(constructSubscribeMessage(event));
     }
 
@@ -56,7 +56,7 @@ public class WSSender implements WsSessionSender, SubscribeListener, FailAuthLis
     }
 
     private void sendMessageToSubscribers(Message message) {
-        message.getRoom().getUsers().forEach(user -> {
+        message.getRoom().getSubscriptions().stream().map(Subscription::getUser).forEach(user -> {
             if (message.isSecret() && user.getRank() < message.getUser().getRank()) {
                 return;
             }
@@ -74,7 +74,7 @@ public class WSSender implements WsSessionSender, SubscribeListener, FailAuthLis
         }
     }
 
-    private Message constructSubscribeMessage(SubscribeEvent event) {
+    private Message constructSubscribeMessage(NewSubscriptionEvent event) {
         return messageService.saveAndFlush(event.getUser(),
                 event.getRoom(),
                 false,

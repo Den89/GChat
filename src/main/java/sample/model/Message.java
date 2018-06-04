@@ -4,6 +4,9 @@ import org.json.simple.JSONObject;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Message {
@@ -23,6 +26,17 @@ public class Message {
 
     @ManyToOne
     private Room room;
+
+    @OneToMany(mappedBy = "message", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
+    private Set<MessageReceiveHistory> receiveHistory = new HashSet<>();
+
+    public Set<MessageReceiveHistory> getReceiveHistory() {
+        return receiveHistory;
+    }
+
+    public void setReceiveHistory(Set<MessageReceiveHistory> receiveHistory) {
+        this.receiveHistory = receiveHistory;
+    }
 
     public int getId() {
         return id;

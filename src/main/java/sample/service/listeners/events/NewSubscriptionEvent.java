@@ -3,11 +3,11 @@ package sample.service.listeners.events;
 import sample.model.Room;
 import sample.model.User;
 
-public class SubscribeEvent {
+public class NewSubscriptionEvent {
     private User user;
     private Room room;
 
-    public SubscribeEvent(User user, Room room) {
+    public NewSubscriptionEvent(User user, Room room) {
         this.user = user;
         this.room = room;
     }

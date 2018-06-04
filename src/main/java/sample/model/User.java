@@ -11,16 +11,15 @@ public class User {
     private String name;
     @Column
     private int rank;
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private Set<Subscription> subscriptions = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Room> rooms = new HashSet<>();
-
-    public Set<Room> getRooms() {
-        return rooms;
+    public Set<Subscription> getSubscriptions() {
+        return subscriptions;
     }
 
-    public void setRooms(Set<Room> rooms) {
-        this.rooms = rooms;
+    public void setSubscriptions(Set<Subscription> subscriptions) {
+        this.subscriptions = subscriptions;
     }
 
     public String getName() {

@@ -11,15 +11,15 @@ public class Room {
     private String name;
     @OneToMany(mappedBy = "room", fetch = FetchType.EAGER)
     private Set<Message> messages = new HashSet<>();
-    @ManyToMany(mappedBy = "rooms", fetch = FetchType.EAGER)
-    private Set<User> users = new HashSet<>();
+    @OneToMany(mappedBy = "room", fetch = FetchType.EAGER)
+    private Set<Subscription> subscriptions = new HashSet<>();
 
-    public Set<User> getUsers() {
-        return users;
+    public Set<Subscription> getSubscriptions() {
+        return subscriptions;
     }
 
-    public void setUsers(Set<User> users) {
-        this.users = users;
+    public void setSubscriptions(Set<Subscription> subscriptions) {
+        this.subscriptions = subscriptions;
     }
 
     public String getName() {
