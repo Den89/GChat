@@ -24,7 +24,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public Room getOrCreate(String roomName) {
-        return roomRepository.findById(roomName).orElseGet(() -> {
+        return roomRepository.findByName(roomName).orElseGet(() -> {
             Room room = new Room();
             room.setName(roomName);
             return roomRepository.save(room);

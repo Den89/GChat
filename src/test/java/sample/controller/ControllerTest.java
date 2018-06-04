@@ -21,6 +21,7 @@ import org.springframework.web.socket.WebSocketSession;
 import sample.configuration.AppConfig;
 import sample.configuration.AppInitializer;
 import sample.configuration.HibernateConfiguration;
+import sample.repository.MessageRepository;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -37,6 +38,8 @@ public class ControllerTest {
     private WebApplicationContext context;
     @Autowired @Qualifier("webSocketHandler")
     private WebSocketHandler handler;
+    @Autowired
+    private MessageRepository repository;
 
     private MockMvc mvc;
 

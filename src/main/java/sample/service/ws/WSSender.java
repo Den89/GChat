@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import sample.model.Message;
-import sample.model.Subscription;
+import sample.model.MessageReceiveHistory;
 import sample.model.User;
 import sample.service.listeners.FailAuthListener;
 import sample.service.listeners.NewMessageListener;
@@ -46,10 +46,7 @@ public class WSSender implements WsSessionSender, FailAuthListener, NewMessageLi
     }
 
     private void sendMessageToSubscribers(Message message) {
-        message.getRoom().getSubscriptions().stream().map(Subscription::getUser).forEach(user -> {
-            if (message.isSecret() && user.getRank() < message.getUser().getRank()) {
-                return;
-            }
+        message.getReceiveHistory().stream().map(MessageReceiveHistory::getReceiver).forEach(user -> {
             sendToUser(user, message.toJSON().toJSONString());
         });
     }

@@ -10,27 +10,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 @Entity
-@Table(name = "message_receive_history")
-public class MessageReceiveHistory {
-    @Id
-    @GeneratedValue
-    @Column
-    private int id;
-
+public class MessageReceiveHistory extends BaseEntity{
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "message_id")
     private Message message;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User receiver;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public Message getMessage() {
         return message;

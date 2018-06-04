@@ -24,13 +24,12 @@ public class AuthenticateServiceImpl implements AuthenticateService {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
-
     @Override
     public boolean checkAccess(String name, String hash) {
         Optional<Integer> mayBeRank = Ranks.getRank(name, hash);
 
         if (mayBeRank.isPresent()) {
-            final User user = userService.findById(name).orElseGet(() -> {
+            final User user = userService.findByName(name).orElseGet(() -> {
                 User createdUser = new User();
                 createdUser.setName(name);
                 createdUser.setRank(mayBeRank.get());

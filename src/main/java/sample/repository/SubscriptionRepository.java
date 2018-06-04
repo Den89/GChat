@@ -6,5 +6,5 @@ import sample.model.Message;
 import sample.model.Subscription;
 
 @Repository
-public interface SubscriptionRepository extends JpaRepository<Subscription, Integer> {
+public interface SubscriptionRepository extends JpaRepository<Subscription, Long> {
 }

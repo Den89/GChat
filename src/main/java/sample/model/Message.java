@@ -9,24 +9,17 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-public class Message {
-    @Id
-    @GeneratedValue
-    @Column
-    private int id;
+public class Message extends BaseEntity{
     @Column
     private String text;
     @Column
     private LocalDateTime time;
     @Column
     private boolean secret;
-
     @OneToOne
     private User user;
-
     @ManyToOne
     private Room room;
-
     @OneToMany(mappedBy = "message", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
     private Set<MessageReceiveHistory> receiveHistory = new HashSet<>();
 
@@ -36,14 +29,6 @@ public class Message {
 
     public void setReceiveHistory(Set<MessageReceiveHistory> receiveHistory) {
         this.receiveHistory = receiveHistory;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getText() {
@@ -98,34 +83,9 @@ public class Message {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Message message = (Message) o;
-
-        if (id != message.id) return false;
-        if (time != message.time) return false;
-        if (secret != message.secret) return false;
-        if (text != null ? !text.equals(message.text) : message.text != null) return false;
-        if (user != null ? !user.equals(message.user) : message.user != null) return false;
-        return room != null ? room.equals(message.room) : message.room == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id;
-        result = 31 * result + (text != null ? text.hashCode() : 0);
-        result = 31 * result + (secret ? 1 : 0);
-        result = 31 * result + (user != null ? user.getName().hashCode() : 0);
-        result = 31 * result + (room != null ? room.getName().hashCode() : 0);
-        return result;
-    }
-
-    @Override
     public String toString() {
         return "Message{" +
-                "id=" + id +
+                "id=" + getId() +
                 ", text='" + text + '\'' +
                 ", epoch=" + time +
                 ", secret=" + secret +

@@ -6,5 +6,5 @@ import sample.model.Message;
 import sample.model.Room;
 
 @Repository
-public interface MessageRepository extends JpaRepository<Message, Integer> {
+public interface MessageRepository extends JpaRepository<Message, Long> {
 }

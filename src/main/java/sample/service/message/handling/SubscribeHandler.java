@@ -24,7 +24,7 @@ public class SubscribeHandler implements MessageHandlingStrategy {
     @Override
     public void handle(MessageDto dto) {
         Room room = roomService.getOrCreate(dto.getRoom());
-        subscribeService.subscribeIfNotSubscribed(room, userService.findById(dto.getName()).get());
+        subscribeService.subscribeIfNotSubscribed(room, userService.findByName(dto.getName()).get());
     }
 
     @Override

@@ -47,7 +47,7 @@ public class MessageServiceImpl implements MessageService {
         Set<MessageReceiveHistory> historyList = room.getSubscriptions()
                 .stream()
                 .map(Subscription::getUser)
-                .filter(u -> ! message.isSecret() || (message.isSecret() && u.getRank() <= message.getUser().getRank()))
+                .filter(u -> !message.isSecret() || (message.isSecret() && u.getRank() >= message.getUser().getRank()))
                 .map(u -> {
                     MessageReceiveHistory history = new MessageReceiveHistory();
                     history.setMessage(message);

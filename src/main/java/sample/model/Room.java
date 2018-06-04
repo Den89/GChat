@@ -5,9 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "rooms")
-public class Room {
-    @Id
+public class Room extends BaseEntity{
+    @Column(unique = true)
     private String name;
     @OneToMany(mappedBy = "room", fetch = FetchType.EAGER)
     private Set<Message> messages = new HashSet<>();
@@ -36,21 +35,6 @@ public class Room {
 
     public void setMessages(Set<Message> messages) {
         this.messages = messages;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Room room = (Room) o;
-
-        return name.equals(room.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return name.hashCode();
     }
 
     @Override

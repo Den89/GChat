@@ -6,5 +6,5 @@ import sample.model.MessageReceiveHistory;
 import sample.model.Subscription;
 
 @Repository
-public interface MessageReceiveHistoryRepository extends JpaRepository<MessageReceiveHistory, Integer> {
+public interface MessageReceiveHistoryRepository extends JpaRepository<MessageReceiveHistory, Long> {
 }

@@ -8,26 +8,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 @Entity
-@Table(name = "subscription")
-public class Subscription {
-    @Id
-    @GeneratedValue
-    @Column
-    private int id;
+public class Subscription extends BaseEntity{
     @ManyToOne
     private User user;
     @ManyToOne
     private Room room;
     @Column
     private LocalDateTime time;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public User getUser() {
         return user;
