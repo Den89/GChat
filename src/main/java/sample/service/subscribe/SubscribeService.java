@@ -7,5 +7,5 @@ import sample.model.User;
 import java.util.Optional;
 
 public interface SubscribeService {
-    void subscribeUser(Room room, User user);
+    void subscribeIfNotSubscribed(Room room, User user);
 }

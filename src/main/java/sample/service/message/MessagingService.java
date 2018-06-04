@@ -11,6 +11,4 @@ public interface MessagingService {
     Map<Message, Set<User>> getReceivers();
 
     void report(User user, Room room, String text, boolean secret);
-
-    void addMessageInRoom(Room room, Message message);
 }

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 import sample.model.User;
 import sample.service.listeners.SuccessAuthListener;
+import sample.service.listeners.events.SuccessAuthEvent;
 
 import java.util.Map;
 import java.util.Optional;
@@ -41,7 +42,8 @@ public class WsSessionManagerImpl implements WsSessionManager, SuccessAuthListen
     }
 
     @Override
-    public synchronized void onSuccessAuth(User user) {
+    public synchronized void onSuccessAuth(SuccessAuthEvent event) {
+        User user = event.getUser();
         WebSocketSession userSession = sessionByUser.get(user);
         WebSocketSession currentSession = getCurrent();
 

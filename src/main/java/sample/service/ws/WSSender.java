@@ -10,6 +10,8 @@ import sample.model.User;
 import sample.service.listeners.FailAuthListener;
 import sample.service.listeners.NewMessageListener;
 import sample.service.listeners.SubscribeListener;
+import sample.service.listeners.events.FailAuthEvent;
+import sample.service.listeners.events.NewMessageEvent;
 import sample.service.message.MessageService;
 import sample.service.session.WsSessionManager;
 import sample.service.listeners.events.SubscribeEvent;
@@ -17,7 +19,6 @@ import sample.service.listeners.events.SubscribeEvent;
 import java.io.IOException;
 
 @Service
-@Transactional
 public class WSSender implements WsSessionSender, SubscribeListener, FailAuthListener, NewMessageListener {
     private final WsSessionManager wsSessionManager;
     @Autowired
@@ -45,20 +46,13 @@ public class WSSender implements WsSessionSender, SubscribeListener, FailAuthLis
     }
 
     @Override
-    public void onSuccessFail(User user) {
+    public void onSuccessFail(FailAuthEvent event) {
         sendToCurrent("Unauthorized");
     }
 
     @Override
-    public void onNewMessage(Message message) {
-        sendMessageToSubscribers(message);
-    }
-
-    private Message constructSubscribeMessage(SubscribeEvent event) {
-        return messageService.saveAndFlush(event.getUser(),
-                event.getRoom(),
-                false,
-                "User " + event.getUser().getName() + " subscribed to the room " + event.getRoom().getName());
+    public void onNewMessage(NewMessageEvent event) {
+        sendMessageToSubscribers(event.getMessage());
     }
 
     private void sendMessageToSubscribers(Message message) {
@@ -78,5 +72,12 @@ public class WSSender implements WsSessionSender, SubscribeListener, FailAuthLis
                 e.printStackTrace();
             }
         }
+    }
+
+    private Message constructSubscribeMessage(SubscribeEvent event) {
+        return messageService.saveAndFlush(event.getUser(),
+                event.getRoom(),
+                false,
+                "User " + event.getUser().getName() + " subscribed to the room " + event.getRoom().getName());
     }
 }

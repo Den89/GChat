@@ -8,7 +8,6 @@ import sample.model.MessageAction;
 import sample.model.Room;
 import sample.service.room.RoomService;
 import sample.service.UserService;
-import sample.service.message.MessagingService;
 import sample.service.subscribe.SubscribeService;
 
 @Service
@@ -25,7 +24,7 @@ public class SubscribeHandler implements MessageHandlingStrategy {
     @Override
     public void handle(MessageDto dto) {
         Room room = roomService.getOrCreate(dto.getRoom());
-        subscribeService.subscribeUser(room, userService.findById(dto.getName()).get());
+        subscribeService.subscribeIfNotSubscribed(room, userService.findById(dto.getName()).get());
     }
 
     @Override

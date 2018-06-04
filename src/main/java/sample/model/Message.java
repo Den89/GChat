@@ -3,6 +3,7 @@ package sample.model;
 import org.json.simple.JSONObject;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 public class Message {
@@ -13,7 +14,7 @@ public class Message {
     @Column
     private String text;
     @Column
-    private long epoch;
+    private LocalDateTime time;
     @Column
     private boolean secret;
 
@@ -47,12 +48,12 @@ public class Message {
         this.user = user;
     }
 
-    public long getEpoch() {
-        return epoch;
+    public LocalDateTime getTime() {
+        return time;
     }
 
-    public void setEpoch(long epoch) {
-        this.epoch = epoch;
+    public void setTime(LocalDateTime time) {
+        this.time = time;
     }
 
     public boolean isSecret() {
@@ -75,7 +76,7 @@ public class Message {
         JSONObject result = new JSONObject();
         result.put("action", "message");
         result.put("text", text);
-        result.put("epoch", epoch);
+        result.put("epoch", time);
         result.put("room", getRoom().getName());
         result.put("author", user.getName());
         result.put("secret", secret);
@@ -90,7 +91,7 @@ public class Message {
         Message message = (Message) o;
 
         if (id != message.id) return false;
-        if (epoch != message.epoch) return false;
+        if (time != message.time) return false;
         if (secret != message.secret) return false;
         if (text != null ? !text.equals(message.text) : message.text != null) return false;
         if (user != null ? !user.equals(message.user) : message.user != null) return false;
@@ -101,7 +102,6 @@ public class Message {
     public int hashCode() {
         int result = id;
         result = 31 * result + (text != null ? text.hashCode() : 0);
-        result = 31 * result + (int) (epoch ^ (epoch >>> 32));
         result = 31 * result + (secret ? 1 : 0);
         result = 31 * result + (user != null ? user.getName().hashCode() : 0);
         result = 31 * result + (room != null ? room.getName().hashCode() : 0);
@@ -113,7 +113,7 @@ public class Message {
         return "Message{" +
                 "id=" + id +
                 ", text='" + text + '\'' +
-                ", epoch=" + epoch +
+                ", epoch=" + time +
                 ", secret=" + secret +
                 ", user=" + user.getName() +
                 ", room=" + room.getName() +

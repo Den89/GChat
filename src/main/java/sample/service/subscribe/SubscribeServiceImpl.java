@@ -22,7 +22,7 @@ public class SubscribeServiceImpl implements SubscribeService{
     private ApplicationEventPublisher applicationEventPublisher;
 
     @Override
-    public void subscribeUser(Room room, User user) {
+    public void subscribeIfNotSubscribed(Room room, User user) {
         if (room.getUsers().contains(user)) {
             return;
         }
