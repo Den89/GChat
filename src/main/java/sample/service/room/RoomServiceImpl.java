@@ -14,12 +14,11 @@ import java.util.Optional;
 @Service
 @Transactional
 public class RoomServiceImpl implements RoomService {
-    @Autowired
-    private RoomRepository roomRepository;
+    private final RoomRepository roomRepository;
 
-    @Override
-    public Optional<Room> findById(String id) {
-        return roomRepository.findById(id);
+    @Autowired
+    public RoomServiceImpl(RoomRepository roomRepository) {
+        this.roomRepository = roomRepository;
     }
 
     @Override

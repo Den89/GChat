@@ -8,6 +8,5 @@ import java.util.List;
 
 public interface MessageService {
     List<Message> findAll();
-    Message save(User user, Room room, boolean secret, String text);
-    Message saveAndFlush(User user, Room room, boolean secret, String text);
+    Message saveAndPublish(User user, Room room, boolean secret, String text);
 }

@@ -11,7 +11,7 @@ import sample.dto.MessageDto;
 import sample.model.MessageAction;
 import sample.service.auth.AuthenticateService;
 import sample.service.message.handling.MessageHandlingStrategy;
-import sample.service.session.WsSessionManager;
+import sample.service.ws.session.WsSessionManager;
 import sample.utils.MappingUtils;
 
 import java.util.*;

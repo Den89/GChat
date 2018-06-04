@@ -1,14 +1,13 @@
 package sample.service.subscribe;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sample.model.Room;
 import sample.model.Subscription;
 import sample.model.User;
 import sample.repository.SubscriptionRepository;
-import sample.service.listeners.events.NewSubscriptionEvent;
+import sample.service.message.MessageService;
 
 import java.time.LocalDateTime;
 
@@ -16,10 +15,14 @@ import java.time.LocalDateTime;
 @Service
 @Transactional
 public class SubscribeServiceImpl implements SubscribeService {
+    private final SubscriptionRepository subscriptionRepository;
+    private final MessageService messageService;
+
     @Autowired
-    private SubscriptionRepository subscriptionRepository;
-    @Autowired
-    private ApplicationEventPublisher applicationEventPublisher;
+    public SubscribeServiceImpl(SubscriptionRepository subscriptionRepository, MessageService messageService) {
+        this.subscriptionRepository = subscriptionRepository;
+        this.messageService = messageService;
+    }
 
     @Override
     public Subscription subscribeIfNotSubscribed(Room room, User user) {
@@ -33,9 +36,13 @@ public class SubscribeServiceImpl implements SubscribeService {
                     subscription.setRoom(room);
                     subscription.setUser(user);
                     subscription.setTime(LocalDateTime.now());
-                    applicationEventPublisher.publishEvent(new NewSubscriptionEvent(user, room));
                     room.getSubscriptions().add(subscription);
+                    messageService.saveAndPublish(user, room, false, getSubscriptionText(user, room));
                     return subscriptionRepository.save(subscription);
                 });
+    }
+
+    private String getSubscriptionText(User user, Room room) {
+        return "User " + user.getName() + " subscribed to the room " + room.getName();
     }
 }

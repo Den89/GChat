@@ -1,4 +1,4 @@
-package sample.service.session;
+package sample.service.ws.session;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;

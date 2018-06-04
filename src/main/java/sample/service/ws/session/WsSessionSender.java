@@ -1,4 +1,4 @@
-package sample.service.ws;
+package sample.service.ws.session;
 
 import sample.model.User;
 

@@ -1,4 +1,4 @@
-package sample.service.session;
+package sample.service.ws.session;
 
 import org.springframework.web.socket.WebSocketSession;
 import sample.model.User;

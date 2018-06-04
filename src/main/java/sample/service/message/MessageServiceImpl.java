@@ -1,28 +1,29 @@
 package sample.service.message;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import sample.model.Message;
-import sample.model.MessageReceiveHistory;
-import sample.model.Room;
-import sample.model.Subscription;
-import sample.model.User;
+import sample.model.*;
 import sample.repository.MessageRepository;
+import sample.service.listeners.events.NewMessageEvent;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class MessageServiceImpl implements MessageService {
+    private final MessageRepository messageRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
+
     @Autowired
-    private MessageRepository messageRepository;
+    public MessageServiceImpl(MessageRepository messageRepository, ApplicationEventPublisher applicationEventPublisher) {
+        this.messageRepository = messageRepository;
+        this.applicationEventPublisher = applicationEventPublisher;
+    }
 
     @Override
     public List<Message> findAll() {
@@ -30,15 +31,10 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public Message save(User user, Room room, boolean secret, String text) {
+    public Message saveAndPublish(User user, Room room, boolean secret, String text) {
         return messageRepository.save(createMessage(user, room, secret, text));
     }
 
-    @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public Message saveAndFlush(User user, Room room, boolean secret, String text) {
-        return messageRepository.saveAndFlush(createMessage(user, room, secret, text));
-    }
 
     private Message createMessage(User user, Room room, boolean secret, String text) {
         Message message = new Message();
@@ -61,6 +57,7 @@ public class MessageServiceImpl implements MessageService {
 
         message.getReceiveHistory().addAll(historyList);
 
+        applicationEventPublisher.publishEvent(new NewMessageEvent(message));
         return message;
     }
 }

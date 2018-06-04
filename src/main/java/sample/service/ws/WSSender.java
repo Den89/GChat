@@ -9,21 +9,16 @@ import sample.model.Subscription;
 import sample.model.User;
 import sample.service.listeners.FailAuthListener;
 import sample.service.listeners.NewMessageListener;
-import sample.service.listeners.SubscribeListener;
 import sample.service.listeners.events.FailAuthEvent;
 import sample.service.listeners.events.NewMessageEvent;
-import sample.service.message.MessageService;
-import sample.service.session.WsSessionManager;
-import sample.service.listeners.events.NewSubscriptionEvent;
+import sample.service.ws.session.WsSessionManager;
+import sample.service.ws.session.WsSessionSender;
 
 import java.io.IOException;
 
 @Service
-public class WSSender implements WsSessionSender, SubscribeListener, FailAuthListener, NewMessageListener {
+public class WSSender implements WsSessionSender, FailAuthListener, NewMessageListener {
     private final WsSessionManager wsSessionManager;
-    @Autowired
-    private MessageService messageService;
-
 
     @Autowired
     public WSSender(WsSessionManager wsSessionManager) {
@@ -38,11 +33,6 @@ public class WSSender implements WsSessionSender, SubscribeListener, FailAuthLis
     @Override
     public void sendToUser(User user, String text) {
         send(text, wsSessionManager.getForLoggedUser(user));
-    }
-
-    @Override
-    public void onSubscribe(NewSubscriptionEvent event) {
-        sendMessageToSubscribers(constructSubscribeMessage(event));
     }
 
     @Override
@@ -74,10 +64,4 @@ public class WSSender implements WsSessionSender, SubscribeListener, FailAuthLis
         }
     }
 
-    private Message constructSubscribeMessage(NewSubscriptionEvent event) {
-        return messageService.saveAndFlush(event.getUser(),
-                event.getRoom(),
-                false,
-                "User " + event.getUser().getName() + " subscribed to the room " + event.getRoom().getName());
-    }
 }

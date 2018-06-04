@@ -11,7 +11,7 @@ import org.springframework.web.socket.server.standard.ServletServerContainerFact
 import sample.service.auth.AuthenticateService;
 import sample.service.ws.WSHandler;
 import sample.service.message.handling.MessageHandlingStrategy;
-import sample.service.session.WsSessionManager;
+import sample.service.ws.session.WsSessionManager;
 
 import java.util.List;
 
