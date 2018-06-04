@@ -6,9 +6,9 @@ import org.springframework.transaction.annotation.Transactional;
 import sample.dto.MessageDto;
 import sample.model.MessageAction;
 import sample.model.Room;
-import sample.service.room.RoomService;
-import sample.service.UserService;
 import sample.service.message.MessagingService;
+import sample.service.room.RoomService;
+import sample.service.user.UserService;
 
 @Service
 @Transactional

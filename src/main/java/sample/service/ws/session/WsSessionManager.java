@@ -3,8 +3,6 @@ package sample.service.ws.session;
 import org.springframework.web.socket.WebSocketSession;
 import sample.model.User;
 
-import java.util.Optional;
-
 public interface WsSessionManager {
     WebSocketSession getCurrent();
 

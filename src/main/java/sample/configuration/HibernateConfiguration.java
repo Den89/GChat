@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-
 import java.beans.PropertyVetoException;
 import java.util.Arrays;
 import java.util.Properties;

@@ -2,7 +2,6 @@ package sample.repository;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import sample.model.Room;
 import sample.model.User;
 
 import java.util.Optional;

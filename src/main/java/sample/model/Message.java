@@ -4,9 +4,8 @@ import org.json.simple.JSONObject;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 public class Message extends BaseEntity{
@@ -21,13 +20,13 @@ public class Message extends BaseEntity{
     @ManyToOne
     private Room room;
     @OneToMany(mappedBy = "message", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
-    private Set<MessageReceiveHistory> receiveHistory = new HashSet<>();
+    private List<MessageReceiveHistory> receiveHistory = new ArrayList<>();
 
-    public Set<MessageReceiveHistory> getReceiveHistory() {
+    public List<MessageReceiveHistory> getReceiveHistory() {
         return receiveHistory;
     }
 
-    public void setReceiveHistory(Set<MessageReceiveHistory> receiveHistory) {
+    public void setReceiveHistory(List<MessageReceiveHistory> receiveHistory) {
         this.receiveHistory = receiveHistory;
     }
 

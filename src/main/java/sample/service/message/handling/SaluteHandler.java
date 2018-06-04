@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sample.dto.MessageDto;
 import sample.model.MessageAction;
-import sample.service.UserService;
+import sample.service.user.UserService;
 import sample.service.ws.session.WsSessionSender;
 
 @Service

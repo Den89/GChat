@@ -7,8 +7,8 @@ import sample.dto.MessageDto;
 import sample.model.MessageAction;
 import sample.model.Room;
 import sample.service.room.RoomService;
-import sample.service.UserService;
 import sample.service.subscribe.SubscribeService;
+import sample.service.user.UserService;
 
 @Service
 @Transactional

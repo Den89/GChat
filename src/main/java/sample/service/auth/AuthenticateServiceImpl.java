@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sample.Ranks;
 import sample.model.User;
-import sample.service.UserService;
-import sample.service.listeners.events.SuccessAuthEvent;
 import sample.service.listeners.events.FailAuthEvent;
+import sample.service.listeners.events.SuccessAuthEvent;
+import sample.service.user.UserService;
 
 import java.util.Optional;
 

@@ -1,8 +1,11 @@
 package sample.model;
 
-import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class User extends BaseEntity{
@@ -11,13 +14,13 @@ public class User extends BaseEntity{
     @Column
     private int rank;
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-    private Set<Subscription> subscriptions = new HashSet<>();
+    private List<Subscription> subscriptions = new ArrayList<>();
 
-    public Set<Subscription> getSubscriptions() {
+    public List<Subscription> getSubscriptions() {
         return subscriptions;
     }
 
-    public void setSubscriptions(Set<Subscription> subscriptions) {
+    public void setSubscriptions(List<Subscription> subscriptions) {
         this.subscriptions = subscriptions;
     }
 

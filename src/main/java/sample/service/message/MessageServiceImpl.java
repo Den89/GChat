@@ -32,7 +32,10 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public Message saveAndPublish(User user, Room room, boolean secret, String text) {
-        return messageRepository.save(createMessage(user, room, secret, text));
+        Message message = createMessage(user, room, secret, text);
+        messageRepository.save(message);
+        applicationEventPublisher.publishEvent(new NewMessageEvent(message));
+        return message;
     }
 
 
@@ -47,7 +50,7 @@ public class MessageServiceImpl implements MessageService {
         Set<MessageReceiveHistory> historyList = room.getSubscriptions()
                 .stream()
                 .map(Subscription::getUser)
-                .filter(u -> !message.isSecret() || (message.isSecret() && u.getRank() >= message.getUser().getRank()))
+                .filter(u -> !secret || (u.getRank() >= message.getUser().getRank()))
                 .map(u -> {
                     MessageReceiveHistory history = new MessageReceiveHistory();
                     history.setMessage(message);
@@ -57,7 +60,6 @@ public class MessageServiceImpl implements MessageService {
 
         message.getReceiveHistory().addAll(historyList);
 
-        applicationEventPublisher.publishEvent(new NewMessageEvent(message));
         return message;
     }
 }

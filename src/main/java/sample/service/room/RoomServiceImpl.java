@@ -5,11 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sample.model.Room;
 import sample.repository.RoomRepository;
-import sample.service.room.RoomService;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
