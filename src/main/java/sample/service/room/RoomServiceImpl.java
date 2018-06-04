@@ -10,6 +10,7 @@ import sample.service.room.RoomService;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -32,13 +33,8 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public Map<Room, Integer> getRoomMessagesNumber() {
-        Map<Room, Integer> numberByRoom = new HashMap<>();
-
-        roomRepository.findAll().forEach(room -> {
-            numberByRoom.put(room, room.getMessages().size());
-        });
-
-        return numberByRoom;
+        return roomRepository.findAll()
+                .stream()
+                .collect(Collectors.toMap(r -> r, r -> r.getMessages().size()));
     }
-
 }

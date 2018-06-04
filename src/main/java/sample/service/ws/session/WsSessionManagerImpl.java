@@ -42,15 +42,17 @@ public class WsSessionManagerImpl implements WsSessionManager, SuccessAuthListen
     }
 
     @Override
-    public synchronized void onSuccessAuth(SuccessAuthEvent event) {
+    public void onSuccessAuth(SuccessAuthEvent event) {
         User user = event.getUser();
-        WebSocketSession userSession = sessionByUser.get(user);
-        WebSocketSession currentSession = getCurrent();
+        synchronized (user) {
+            WebSocketSession userSession = sessionByUser.get(user);
+            WebSocketSession currentSession = getCurrent();
 
-        if (userSession == null){
-            setForUser(user, currentSession);
-        } else if (userSession != currentSession){
-            throw new RuntimeException("Duplicate connection");
+            if (userSession == null) {
+                setForUser(user, currentSession);
+            } else if (userSession != currentSession) {
+                throw new RuntimeException("Duplicate connection");
+            }
         }
     }
 }
