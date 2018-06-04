@@ -1,31 +1,32 @@
 package sample.service.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sample.Ranks;
 import sample.model.User;
 import sample.service.UserService;
-import sample.service.session.WsSessionSender;
+import sample.service.listeners.events.SuccessAuthEvent;
+import sample.service.listeners.events.FailAuthEvent;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class AuthenticateServiceImpl implements AuthenticateService {
     private final UserService userService;
-    private final WsSessionSender wsSessionSender;
-    private final List<AuthListener> listeners;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
-    public AuthenticateServiceImpl(UserService userService, WsSessionSender wsSessionSender, List<AuthListener> listeners) {
+    public AuthenticateServiceImpl(UserService userService, ApplicationEventPublisher applicationEventPublisher) {
         this.userService = userService;
-        this.wsSessionSender = wsSessionSender;
-        this.listeners = listeners;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
 
     @Override
-    public boolean authenticate(String name, String hash) {
+    public boolean checkAccess(String name, String hash) {
         Optional<Integer> mayBeRank = Ranks.getRank(name, hash);
 
         if (mayBeRank.isPresent()) {
@@ -35,10 +36,10 @@ public class AuthenticateServiceImpl implements AuthenticateService {
                 createdUser.setRank(mayBeRank.get());
                 return userService.save(createdUser);
             });
-            listeners.forEach(l -> l.onSuccessAuth(user));
+            applicationEventPublisher.publishEvent(new SuccessAuthEvent(user));
             return true;
         } else {
-            wsSessionSender.sendToCurrent("Unauthorized");
+            applicationEventPublisher.publishEvent(new FailAuthEvent());
             return false;
         }
     }

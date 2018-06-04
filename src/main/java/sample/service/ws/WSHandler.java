@@ -1,4 +1,4 @@
-package sample.service;
+package sample.service.ws;
 
 import com.fasterxml.jackson.databind.ObjectReader;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ public class WSHandler implements WebSocketHandler {
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
         wsSessionManager.setCurrent(session);
         MessageDto messageDto = messageReader.readValue(message.getPayload().toString());
-        authService.authenticate(messageDto.getName(), messageDto.getHash());
+        authService.checkAccess(messageDto.getName(), messageDto.getHash());
         handlersByAction.get(messageDto.getAction()).handle(messageDto);
     }
 

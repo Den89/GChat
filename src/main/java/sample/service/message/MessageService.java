@@ -5,5 +5,5 @@ import sample.model.Room;
 import sample.model.User;
 
 public interface MessageService {
-    Message create(User user, Room room, boolean secret, String text);
+    Message saveAndFlush(User user, Room room, boolean secret, String text);
 }

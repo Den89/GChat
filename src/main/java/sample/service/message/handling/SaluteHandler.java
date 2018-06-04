@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import sample.dto.MessageDto;
 import sample.model.MessageAction;
 import sample.service.UserService;
-import sample.service.session.WsSessionSender;
+import sample.service.ws.WsSessionSender;
 
 @Service
 @Transactional

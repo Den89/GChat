@@ -3,14 +3,14 @@ package sample.service.session;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 import sample.model.User;
-import sample.service.auth.AuthListener;
+import sample.service.listeners.SuccessAuthListener;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
-public class WsSessionManagerImpl implements WsSessionManager, AuthListener {
+public class WsSessionManagerImpl implements WsSessionManager, SuccessAuthListener {
     private final ThreadLocal<WebSocketSession> wsSession = new ThreadLocal<>();
     private final Map<User, WebSocketSession> sessionByUser = new ConcurrentHashMap<>();
 

@@ -1,4 +1,4 @@
-package sample.service.subscribe;
+package sample.service.listeners.events;
 
 import sample.model.Room;
 import sample.model.User;

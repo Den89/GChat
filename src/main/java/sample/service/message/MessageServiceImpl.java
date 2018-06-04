@@ -15,13 +15,13 @@ public class MessageServiceImpl implements MessageService {
     private MessageRepository messageRepository;
 
     @Override
-    public Message create(User user, Room room, boolean secret, String text) {
+    public Message saveAndFlush(User user, Room room, boolean secret, String text) {
         Message message = new Message();
         message.setUser(user);
         message.setRoom(room);
         message.setEpoch(System.currentTimeMillis() / 1000);
         message.setSecret(secret);
         message.setText(text);
-        return messageRepository.save(message);
+        return messageRepository.saveAndFlush(message);
     }
 }

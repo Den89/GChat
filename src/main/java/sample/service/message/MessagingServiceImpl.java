@@ -1,24 +1,17 @@
 package sample.service.message;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.event.TransactionalEventListener;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketSession;
 import sample.model.Message;
 import sample.model.Room;
 import sample.model.User;
-import sample.service.session.WsSessionManager;
-import sample.service.session.WsSessionSender;
-import sample.service.subscribe.SubscribeEvent;
+import sample.service.listeners.events.NewMessageEvent;
+import sample.service.ws.WsSessionSender;
 import sample.service.subscribe.SubscribeService;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -29,6 +22,8 @@ public class MessagingServiceImpl implements MessagingService {
     private SubscribeService subscribeService;
     @Autowired
     private MessageService messageService;
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
 
     private final Map<Message, Set<User>> receiversByMessage = new HashMap<>();
 
@@ -40,10 +35,9 @@ public class MessagingServiceImpl implements MessagingService {
     @Override
     public void report(User user, Room room, String text, boolean secret) {
         subscribeService.subscribeUser(room, user);
-        Message msg = messageService.create(user, room, secret, text);
+        Message msg = messageService.saveAndFlush(user, room, secret, text);
         addMessageInRoom(room, msg);
-        sendMessageToSubscribers(msg);
-
+        applicationEventPublisher.publishEvent(new NewMessageEvent(msg));
     }
 
     @Override
@@ -51,13 +45,4 @@ public class MessagingServiceImpl implements MessagingService {
         room.getMessages().add(message);
     }
 
-    @Override
-    public void sendMessageToSubscribers(Message message) {
-        message.getRoom().getUsers().forEach(user -> {
-            if (message.isSecret() && user.getRank() < message.getUser().getRank()) {
-                return;
-            }
-            wsSessionSender.sendToUser(user, message.toJSON().toJSONString());
-        });
-    }
 }
