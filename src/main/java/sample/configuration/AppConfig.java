@@ -5,6 +5,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
@@ -21,6 +22,7 @@ import java.util.List;
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = "sample")
+@EnableAspectJAutoProxy
 public class AppConfig extends WebMvcConfigurerAdapter {
     /**
      * Configure ViewResolvers to deliver preferred views.
