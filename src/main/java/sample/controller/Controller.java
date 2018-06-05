@@ -16,8 +16,6 @@ import sample.service.message.MessagingService;
 import sample.service.room.RoomService;
 import sample.service.user.RankService;
 
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.Set;
 
@@ -34,23 +32,24 @@ class Controller {
 
     @RequestMapping(value="/salute", method=RequestMethod.POST, produces = "application/json; charset=UTF-8")
     public @ResponseBody String echo(@RequestParam(name = "name") String name,
-                                     @RequestParam(name = "hash") String hash)
-            throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        final String[] result = new String[]{"Unauthorized"};
-        rankService.getRank(name, hash).ifPresent(rank -> result[0] = "You are " + rank.getName());
-        return result[0];
+                                     @RequestParam(name = "hash") String hash) {
+        return rankService.getRank(name, hash).map(rank -> "You are " + rank.getName()).orElse("Unauthorized");
     }
 
     @RequestMapping(value="/pleaseGeneral", method=RequestMethod.POST, produces = "application/json; charset=UTF-8")
     public @ResponseBody String getReceivedMessages(@RequestParam(name = "hash") String hash,
                                        @RequestParam(name = "name") String name) {
-        return constructReceiversResponse(messagingService.getReceivers()).toJSONString();
+        return rankService.getRank(name, hash)
+                .map(r->constructReceiversResponse(messagingService.getReceivers()).toJSONString())
+                .orElse("Unauthorized");
     }
 
     @RequestMapping(value="/rooms", method=RequestMethod.POST, produces = "application/json; charset=UTF-8")
     public @ResponseBody String getRooms(@RequestParam(name = "hash") String hash,
                                        @RequestParam(name = "name") String name) {
-        return constructRoomsResponse(roomService.getRoomMessagesNumber()).toJSONString();
+        return rankService.getRank(name, hash)
+                .map(r-> constructRoomsResponse(roomService.getRoomMessagesNumber()).toJSONString())
+                .orElse("Unauthorized");
     }
 
     private JSONObject constructRoomsResponse(Map<Room, Integer> numberByRoom) {

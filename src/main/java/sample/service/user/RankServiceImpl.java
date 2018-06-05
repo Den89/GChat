@@ -1,8 +1,6 @@
 package sample.service.user;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 import sample.model.Rank;
 

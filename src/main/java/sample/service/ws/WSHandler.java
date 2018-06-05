@@ -44,17 +44,17 @@ public class WSHandler implements WebSocketHandler {
 
 
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+    public void afterConnectionEstablished(WebSocketSession session){
         wsSessionManager.setCurrent(session);
     }
 
     @Override
-    public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
+    public void handleTransportError(WebSocketSession session, Throwable exception){
         wsSessionManager.unsetCurrent(session);
     }
 
     @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus){
         wsSessionManager.unsetCurrent(session);
     }
 
