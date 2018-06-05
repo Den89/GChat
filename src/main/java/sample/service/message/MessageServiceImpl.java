@@ -4,7 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sample.model.*;
+import sample.model.Message;
+import sample.model.MessageReceiveHistory;
+import sample.model.Room;
+import sample.model.Subscription;
+import sample.model.User;
 import sample.repository.MessageRepository;
 import sample.service.listeners.events.NewMessageEvent;
 
@@ -50,7 +54,7 @@ public class MessageServiceImpl implements MessageService {
         Set<MessageReceiveHistory> historyList = room.getSubscriptions()
                 .stream()
                 .map(Subscription::getUser)
-                .filter(u -> !secret || (u.getRank() >= message.getUser().getRank()))
+                .filter(u -> !secret || (u.getRank().getRank() >= message.getUser().getRank().getRank()))
                 .map(u -> {
                     MessageReceiveHistory history = new MessageReceiveHistory();
                     history.setMessage(message);

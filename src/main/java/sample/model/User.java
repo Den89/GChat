@@ -2,6 +2,8 @@ package sample.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
@@ -9,10 +11,11 @@ import java.util.List;
 
 @Entity
 public class User extends BaseEntity{
+    @Enumerated(EnumType.STRING)
+    @Column
+    private Rank rank;
     @Column(unique = true)
     private String name;
-    @Column
-    private int rank;
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<Subscription> subscriptions = new ArrayList<>();
 
@@ -32,11 +35,11 @@ public class User extends BaseEntity{
         this.name = name;
     }
 
-    public int getRank() {
+    public Rank getRank() {
         return rank;
     }
 
-    public void setRank(int rank) {
+    public void setRank(Rank rank) {
         this.rank = rank;
     }
 

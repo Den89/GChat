@@ -44,7 +44,8 @@ public class ControllerTest {
     private MockMvc mvc;
 
     private static final String SIMON_HASH = "E+pl1T31nObs76mdbZORgQ==";
-    private static final String VAVILEN_HASH = "fYKrKtbVblnWFo/4EfVGmg==";
+//    private static final String VAVILEN_HASH = "fYKrKtbVblnWFo/4EfVGmg==";
+    private static final String VAVILEN_HASH = "3vZFGM4d0Z3lxdg8bY0HHQ==";
 
     @Before
     public void setup() throws IOException {

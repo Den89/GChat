@@ -3,14 +3,18 @@ package sample.controller;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import sample.Ranks;
 import sample.model.Message;
 import sample.model.Room;
 import sample.model.User;
 import sample.service.message.MessagingService;
 import sample.service.room.RoomService;
+import sample.service.user.RankService;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
@@ -25,13 +29,15 @@ class Controller {
     private MessagingService messagingService;
     @Autowired
     private RoomService roomService;
+    @Autowired
+    private RankService rankService;
 
     @RequestMapping(value="/salute", method=RequestMethod.POST, produces = "application/json; charset=UTF-8")
     public @ResponseBody String echo(@RequestParam(name = "name") String name,
                                      @RequestParam(name = "hash") String hash)
             throws UnsupportedEncodingException, NoSuchAlgorithmException {
         final String[] result = new String[]{"Unauthorized"};
-        Ranks.getRank(name, hash).ifPresent(rank -> result[0] = "You are " + Ranks.getRankName(rank));
+        rankService.getRank(name, hash).ifPresent(rank -> result[0] = "You are " + rank.getName());
         return result[0];
     }
 

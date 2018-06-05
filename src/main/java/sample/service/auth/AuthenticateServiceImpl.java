@@ -4,10 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sample.Ranks;
+import sample.model.Rank;
 import sample.model.User;
 import sample.service.listeners.events.FailAuthEvent;
 import sample.service.listeners.events.SuccessAuthEvent;
+import sample.service.user.RankService;
 import sample.service.user.UserService;
 
 import java.util.Optional;
@@ -16,17 +17,19 @@ import java.util.Optional;
 @Transactional
 public class AuthenticateServiceImpl implements AuthenticateService {
     private final UserService userService;
+    private final RankService rankService;
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
-    public AuthenticateServiceImpl(UserService userService, ApplicationEventPublisher applicationEventPublisher) {
+    public AuthenticateServiceImpl(UserService userService, RankService rankService, ApplicationEventPublisher applicationEventPublisher) {
         this.userService = userService;
+        this.rankService = rankService;
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Override
     public boolean checkAccess(String name, String hash) {
-        Optional<Integer> mayBeRank = Ranks.getRank(name, hash);
+        Optional<Rank> mayBeRank = rankService.getRank(name, hash);
 
         if (mayBeRank.isPresent()) {
             final User user = userService.findByName(name).orElseGet(() -> {
