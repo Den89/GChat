@@ -38,8 +38,9 @@ public class WSHandler implements WebSocketHandler {
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
         wsSessionManager.setCurrent(session);
         MessageDto messageDto = messageReader.readValue(message.getPayload().toString());
-        authService.checkAccess(messageDto.getName(), messageDto.getHash());
-        handlersByAction.get(messageDto.getAction()).handle(messageDto);
+        if (authService.checkAccess(messageDto.getName(), messageDto.getHash())){
+            handlersByAction.get(messageDto.getAction()).handle(messageDto);
+        }
     }
 
 
