@@ -76,17 +76,6 @@ public class Message extends BaseEntity{
         this.room = room;
     }
 
-    public JSONObject toJSON() {
-        JSONObject result = new JSONObject();
-        result.put("action", "message");
-        result.put("text", text);
-        result.put("epoch", time);
-        result.put("room", getRoom().getName());
-        result.put("author", user.getName());
-        result.put("secret", secret);
-        return result;
-    }
-
     @Override
     public String toString() {
         return "Message{" +

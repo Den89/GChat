@@ -7,6 +7,8 @@ public enum MessageAction {
     SALUTE,
     @JsonProperty("subscribe")
     SUBSCRIBE,
+    @JsonProperty("message")
+    MESSAGE,
     @JsonProperty("report")
     REPORT;
 

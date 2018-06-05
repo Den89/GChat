@@ -1,6 +1,8 @@
 package sample.service.user;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 import sample.model.Rank;
 
@@ -12,7 +14,6 @@ import java.util.Optional;
 
 @Service
 public class RankServiceImpl implements RankService{
-
     @Override
     public Optional<Rank> getRank(String userName, String hash) {
         return Arrays.stream(Rank.values())
@@ -21,17 +22,18 @@ public class RankServiceImpl implements RankService{
     }
 
     private String getMD5(String x){
-        byte[] bytesOfMessage;
-        MessageDigest md;
+        byte[] thedigest;
 
         try {
+            byte[] bytesOfMessage;
+            MessageDigest md;
             bytesOfMessage = x.getBytes("UTF-8");
             md = MessageDigest.getInstance("MD5");
+            thedigest = md.digest(bytesOfMessage);
         } catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
+           throw new RuntimeException("MD5 error", e);
         }
 
-        byte[] thedigest = md.digest(bytesOfMessage);
         return new String(Base64.encodeBase64(thedigest));
     }
 }

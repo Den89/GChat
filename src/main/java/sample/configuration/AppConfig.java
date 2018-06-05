@@ -1,5 +1,6 @@
 package sample.configuration;
 
+import org.dozer.DozerBeanMapper;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -62,6 +63,12 @@ public class AppConfig extends WebMvcConfigurerAdapter {
     @Bean(name = "multipartResolver")
     public StandardServletMultipartResolver resolver() {
         return new StandardServletMultipartResolver();
+    }
+
+    @Bean
+    public DozerBeanMapper mapper() {
+        DozerBeanMapper mapper =  new DozerBeanMapper();
+        return mapper;
     }
 
 }
